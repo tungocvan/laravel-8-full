@@ -1,0 +1,26 @@
+server {    	
+    # copy file nay ra chay cho cac domain tuong ung
+    # neu vps chay 443 ma khong co chung chi thi an luon dong 443 ssl o duoi luon	
+    listen 80;
+    listen 443 ssl;
+    server_name laravel.tk;
+    # doi voi nginx chay tren vps: neu khong co ssl thi an 2 dong duoi 	
+    # day la ssl chay https tren localhost, neu co chung chi ssl chay tren vps thi them vao.
+    ssl_certificate /etc/.cert/laravel.tk-cert.pem;
+    ssl_certificate_key /etc/.cert/laravel.tk-key.pem;
+    root /var/www/laravel-8/public;
+    index index.php index.html index.htm;
+	
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
